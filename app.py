@@ -20,6 +20,9 @@ def index():
 def recipe(id):
   #### Instantiate form class here
   comment_form = CommentForm()
+  #### Handling FlaskForm Data
+  new_comment = comment_form.comment.data
+  comments[id].append(new_comment)
   return render_template("recipe.html", template_recipe=recipes[id], template_description=descriptions[id], template_ingredients=ingredients[id], template_instructions=instructions[id], template_comments=comments[id], template_form=comment_form)
 
 @app.route("/about")
