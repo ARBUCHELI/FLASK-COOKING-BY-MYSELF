@@ -3,13 +3,16 @@ from helper import recipes, descriptions, ingredients, instructions, add_ingredi
 # New imports
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
+#### Validation
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "mysecret"
 
 #### Create form class here
 class CommentForm(FlaskForm):
-    comment = StringField("Comment")
+    #### Add a validator argument in the StringField
+    comment =  StringField("Comment", validators=[DataRequired()])
     submit = SubmitField("Add Comment")
 
 @app.route("/", methods=["GET", "POST"])
@@ -19,10 +22,14 @@ def index():
 @app.route("/recipe/<int:id>", methods=["GET", "POST"])
 def recipe(id):
   #### Instantiate form class here
-  comment_form = CommentForm()
+  comment_form = CommentForm(csrf_enabled=False)
   #### Handling FlaskForm Data
-  new_comment = comment_form.comment.data
-  comments[id].append(new_comment)
+  #### new_comment = comment_form.comment.data
+  #### comments[id].append(new_comment)
+  #### Replace 'True' with form validation
+  if comment_form.validate_on_submit():
+    new_comment = comment_form.comment.data
+    comments[id].append(new_comment)
   return render_template("recipe.html", template_recipe=recipes[id], template_description=descriptions[id], template_ingredients=ingredients[id], template_instructions=instructions[id], template_comments=comments[id], template_form=comment_form)
 
 @app.route("/about")
